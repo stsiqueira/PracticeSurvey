@@ -1,19 +1,12 @@
 import axios from 'axios'
 
-export  const getData = async (url) => {
-    const data = await axios.get(url)
-    //  .then(response => response.data)
-    //  .then( data=> {
-    //    setUserString(JSON.stringify(data.results))
-    //    setUsers(data.results)
-    //    return data.results
-    //  })
-     .catch( err => console.log(err));
-     return data
-}
+export const dbUrl =   `http://localhost:5000/`
 
-export const fetchData = async (url) => {
-    const res = await fetch(url);
-    const data = await res.json();
-    return data;
-}
+export const fetchData = async (path) => {
+    try {
+      const response = await axios.get(dbUrl+path);
+      return response.data
+    } catch (err) {
+      console.error(err);
+    }
+  }

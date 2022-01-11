@@ -1,44 +1,58 @@
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
-import { FlatList, SafeAreaView, StyleSheet, Text, View } from 'react-native';
-import axios from 'axios'
+import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import SurveysList from '../Lists/SurveysList';
-import { NavigationContainer } from '@react-navigation/native';
+import { fetchData } from '../../services/api';
 
+const styles = StyleSheet.create({
+    screenContainer: {
+      flex: 1,
+      backgroundColor: '#ccc',
+    },
+    questionContainer:{
+      backgroundColor:'#fff', 
+      flex:1, 
+      borderTopLeftRadius:30, 
+      borderTopRightRadius:30, 
+      padding:32
+    },
+    headerContainer:{
+      paddingTop:36, 
+      paddingLeft:24, 
+      marginBottom:24
+    },
+    title:{
+      fontWeight:'700', 
+      fontSize:52
+  }
+});
 
+const Home = ( {navigation}) => {
 
-
-const Home = () => {
   const [surveys, setSurveys] = useState([])
-  const dbUrl =   `http://localhost:5000`
 
-  const fetchData = async (url, path) => {
-    try {
-      const response = await axios.get(url+path);
-      setSurveys([response.data])
-    } catch (err) {
-      console.error(err);
-    }
+  const fetch = async (path) => {
+    const survey1 = await fetchData("survey1")
+    const survey2 = await fetchData("survey2")
+    setSurveys([survey1, survey2])
   }
+  useEffect(fetch, [])
 
-  const handleSurvey = ({ name, navigation}) => {
-      navigation.navigate('Survey')
+  const handleSurvey = (name) => {
+    console.log(name)
+    navigation.navigate("Survey", { name: name } )
   }
-
-  useEffect(() => {
-    fetchData(dbUrl, "/survey1")
-  // fetchData(dbUrl, "/survey2")
-  }, [])
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={{paddingTop:36, paddingLeft:24, marginBottom:24}}>
-        <Text style={{fontWeight:'700', fontSize:52}}>Surveys</Text>
+    <SafeAreaView style={styles.screenContainer}>
+      <View style={styles.headerContainer}>
+        <Text style={styles.title}>Surveys</Text>
       </View>
 
-      <View style={{backgroundColor:'#fff', flex:1, borderTopLeftRadius:30, borderTopRightRadius:30, padding:32}}>
-        {surveys.map((survey, idx)=> (
-          <SurveysList name={survey.name} key={idx} id={idx} handleSurvey={handleSurvey}/>
+      <View style={styles.questionContainer}>
+        {
+        surveys.map((survey)=> (
+          <SurveysList name={survey.name} key={survey.name} handleSurvey={handleSurvey}/>
         ))}
       </View>
       <StatusBar style="auto" />
@@ -47,9 +61,4 @@ const Home = () => {
 }
 export default Home
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#ccc',
-  },
-});
+

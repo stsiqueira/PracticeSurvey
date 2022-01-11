@@ -9,9 +9,12 @@ const Stack = createStackNavigator();
 
 const Nav = () => {
     return (
-        <Stack.Navigator>
-            <Stack.Screen name="Survey" component={Survey} />
+        <Stack.Navigator 
+        screenOptions={{
+            headerShown: false
+          }}>
             <Stack.Screen name="Home" component={Home} />
+            <Stack.Screen name="Survey" component={Survey} />
         </Stack.Navigator>
 
     )
